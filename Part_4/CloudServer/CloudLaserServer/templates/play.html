@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html class="no-js">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>Cat Laser</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}" media="screen">
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+        <script src="{{ url_for('static', filename='js/vendor/modernizr-2.6.2.min.js') }}"></script>
+        <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.4.8/socket.io.min.js"></script>
+    </head>
+    <body>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-8">
+                    <h2>Raspberry Pi Cat Laser - Play</h2>
+                    <div id="video">
+                        <!-- Set the MJPEG video stream URL in the image source below -->
+                        <img src="http://localhost:8080/index1.jpg"/>
+                        <div id="calibrateLayer"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script src="{{ url_for('static', filename='js/vendor/jquery-1.10.1.min.js') }}"></script>
+        <script src="{{ url_for('static', filename='js/vendor/json2.js') }}"></script>
+        <script src="{{ url_for('static', filename='js/vendor/bootstrap.min.js') }}"></script>
+        <script src="{{ url_for('static', filename='js/vendor/raphael-min.js') }}"></script>
+        <script>
+            $(document).ready(function() {
+              // Connect to socketio server.
+              var socket = io.connect();
+              socket.on('connect', function() {
+                console.log('Connected!');
+              });
+
+              // Generate an event that fires when the video image is loaded.
+              // Use both the load event on the image, and a 1 second timeout as
+              // a fallback.  I found the fallback is necessary with Chrome
+              // because it sometimes never fires the load event for an MJPEG image.
+              var video = $('#video img').first();
+              var videoLoad = $.Deferred();
+              window.setTimeout(function() {
+                  videoLoad.resolve();
+              }, 1000);
+              video.load(function() {
+                  videoLoad.resolve();
+              });
+
+              // Wait for the video image to load, then setup calibration.
+              videoLoad.done(function() {
+                  canvas = Raphael('calibrateLayer', video.width(), video.height());
+              });
+
+              // Send target commands based on click locations
+              $('#calibrateLayer').click(function(ev) {
+                console.log('Target clicked! ' + ev.offsetX + ',' + ev.offsetY);
+                socket.emit('target', {x: ev.offsetX, y: ev.offsetY});
+              });
+            });
+        </script>
+    </body>
+</html>

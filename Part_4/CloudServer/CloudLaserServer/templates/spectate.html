@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html class="no-js">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>Cat Laser</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}" media="screen">
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+        <script src="{{ url_for('static', filename='js/vendor/modernizr-2.6.2.min.js') }}"></script>
+    </head>
+    <body>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-8">
+                    <h2>Raspberry Pi Cat Laser - Spectator</h2>
+                    <div id="video">
+                        <!-- Set the MJPEG video stream URL in the image source below -->
+                        <img src="http://localhost:8080/index1.jpg"/>
+                    </div>
+                    <h4><a href="{{ url_for('play') }}">PLAY</a></h4>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
