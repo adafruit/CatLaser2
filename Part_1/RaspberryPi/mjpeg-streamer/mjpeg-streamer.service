@@ -1,0 +1,9 @@
+[Unit]
+Description=MJPG Streamer Service
+
+[Service]
+ExecStart=/home/pi/mjpg-streamer/mjpg-streamer-experimental/start.sh
+WorkingDirectory=/home/pi/mjpg-streamer/mjpg-streamer-experimental/
+
+[Install]
+WantedBy=multi-user.target
