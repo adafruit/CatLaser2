@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html class="no-js">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>Cat Laser</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    </head>
+    <body>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-8 col-md-offset-2">
+                    <h2>Raspberry Pi Cat Laser - Play</h2>
+                    <h3 id="message1"></h3>
+                    <h3 id="message2"></h3>
+                    <div id="video">
+                        <!-- Set the MJPEG video stream URL in the image source below -->
+                        <img src="{{ config['MJPEG_URL'] }}"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha256-cCueBR6CsyA4/9szpPfrX3s49M9vUU5BgtiJj06wt/s=" crossorigin="anonymous"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+        <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.4.8/socket.io.min.js"></script>
+        <script>
+            $(document).ready(function() {
+              // Connect to socketio server.
+              var socket = io.connect();
+              socket.on('connect', function() {
+                console.log('Connected!');
+              });
+              socket.on('disconnect', function() {
+                console.log('Disconnected!');
+              });
+              socket.on('playtime', function(playtime) {
+                $('#message1').text('You are PLAYING! Click on video to aim laser...');
+                $('#message2').text('Play remaining: ' + playtime.toFixed(0) + ' seconds');
+                // Make the page text red when active.
+                $('body').css('color', '#FF0000');
+              });
+              socket.on('wait_position', function(position) {
+                $('#message1').text('You are waiting in line to play.')
+                $('#message2').text('Your position in line: ' + position);
+                // Make the page text black when waiting.
+                $('body').css('color', '#000000');
+              });
+              socket.on('message', function(message) {
+                if (message === 'end_active') {
+                  // Jump back to spectate page when your active play session ends.
+                  window.location = 'spectate';
+                }
+              });
+              // Add a video click handler to send target events with the
+              // clicked X, Y position while playing.
+              $('#video').click(function(ev) {
+                socket.emit('target', {x: ev.offsetX, y: ev.offsetY});
+              });
+            });
+        </script>
+    </body>
+</html>

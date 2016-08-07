@@ -1,13 +1,16 @@
-# Cat Laser Toy 2.0 Part 4
+# Cat Laser Toy 2.0 Part 5
 
-This part of the series continues how to separate the original cat laser code into
-two parts, one that runs on the Raspberry Pi and controls the laser and another
-that runs on a server (in this case an Ubuntu virtual machine running in Vagrant/VirtualBox)
-to provide laser control for many users.  This video explores the following topics:
+This final part of the series completes the cloud laser server code and moves
+it to a cloud server running in Amazon's AWS system.  This video explores the
+following topics:
 
--   Modifying the original cat laser server code (from the RaspberryPi/LaserServer
-    folder) so that it can run on the cloud server and send target commands to
-    the Pi over the MQTT broker.
+-   Creating an Amazon AWS server to run the cloud laser server code.
+
+-   Configuring the entire system, from Raspberry Pi to cloud server.
+
+-   Running the cloud laser server and playing with multiple users.
+
+-   How the cloud laser server code works.
 
 The following code is in this repository:
 
