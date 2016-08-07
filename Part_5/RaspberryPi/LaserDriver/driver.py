@@ -11,6 +11,7 @@ import servos
 
 import paho.mqtt.client as mqtt
 import parse
+import RPi.GPIO as GPIO
 
 
 # Configuration:
@@ -21,8 +22,9 @@ SERVO_PWM_FREQ        = 50     # PWM frequency for the servos in HZ (should be 5
 SERVO_MIN             = 150    # Minimum rotation value for the servo, should be -90 degrees of rotation.
 SERVO_MAX             = 600    # Maximum rotation value for the servo, should be 90 degrees of rotation.
 SERVO_CENTER          = 200    # Center value for the servo, should be 0 degrees of rotation.
-MQTT_SERVER           = 'tony-imac'  # MQTT server to connect to for receiving commands.
+MQTT_SERVER           = 'localhost'  # MQTT server to connect to for receiving commands.
 MQTT_PORT             = 1883         # Port for the MQTT server.
+LASER_GPIO            = 23     # GPIO pin connected to a transistor that controls the laser on/off.
 
 # MQTT topics used for controlling the laser.
 TOPIC_TARGET          = 'catlaser/target'
@@ -58,6 +60,11 @@ def on_disconnect(client, userdata, rc):
     print('Disconnected with rc: {0}'.format(rc))
     sys.exit(1)
 
+
+# Turn the laser on by setting its control GPIO high.
+GPIO.setmode(GPIO.BCM)
+GPIO.setup(LASER_GPIO, GPIO.OUT)
+GPIO.output(LASER_GPIO, GPIO.HIGH)
 
 # Setup MQTT client and connect to server.
 client = mqtt.Client()
